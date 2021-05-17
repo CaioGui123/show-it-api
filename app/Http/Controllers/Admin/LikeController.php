@@ -4,9 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Like;
 
 class LikeController extends Controller
 {
+    private $like;
+
+    public function __construct(Like $like) {
+        $this->like = $like;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +21,9 @@ class LikeController extends Controller
      */
     public function index()
     {
-        //
+        $likes = $this->like->all();
+
+        return response()->json($likes);
     }
 
     /**

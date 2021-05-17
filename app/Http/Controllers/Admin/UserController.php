@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Admin\UserRequest;
 use App\User;
 
 class UserController extends Controller
@@ -14,6 +15,7 @@ class UserController extends Controller
     {
         $this->user = $user;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +23,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->user->with('comments')->get();
+        $users = $this->user->with('posts', 'posts.comments')->get();
 
         return response()->json($users);
     }
@@ -32,9 +34,16 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        //
+        dd('nice');
+        $data = $request->validated();
+
+        $data['password'] = bcrypt($data['password']);
+
+        $user = $this->user->create($data);
+
+        return response()->json($user);
     }
 
     /**
@@ -57,7 +66,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
         //
     }

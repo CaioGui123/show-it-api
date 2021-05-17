@@ -22,6 +22,6 @@ Route::namespace('Admin')->group(function () {
     Route::resource('comments', 'CommentController');
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
