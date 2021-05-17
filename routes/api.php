@@ -13,15 +13,24 @@ use Illuminate\Http\Request;
 |
 */
 
+// Auth Routes
+Route::namespace('Auth')->group(function () {
+    Route::post('login', 'AuthController@login');
+
+    Route::middleware('auth.jwt')->group(function () {
+        Route::post('logout', 'AuthController@logout');
+    });
+});
+
+// Auth Routes
+
+// User Routes
+Route::middleware('auth.jwt')->namespace('Admin')->group(function () {
 
 
-Route::namespace('Admin')->group(function () {
+    // User Routes
     Route::resource('users', 'UserController');
     Route::resource('posts', 'PostController');
     Route::resource('likes', 'LikeController');
     Route::resource('comments', 'CommentController');
 });
-
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
