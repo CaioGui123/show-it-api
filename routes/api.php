@@ -22,13 +22,8 @@ Route::namespace('Auth')->group(function () {
     });
 });
 
-// Auth Routes
-
 // User Routes
 Route::middleware('auth.jwt')->namespace('Admin')->group(function () {
-
-
-    // User Routes
     Route::resource('users', 'UserController');
     Route::resource('posts', 'PostController');
     Route::resource('likes', 'LikeController');

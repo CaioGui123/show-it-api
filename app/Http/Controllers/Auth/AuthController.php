@@ -14,15 +14,23 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->only(['email', 'password']);
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string', 'min:8']
+        ]);
 
-        // dd($credentials);
+        $credentials = $request->only(['email', 'password']);
 
         if (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        $user = auth('api')->user();
+
+        if ($user->image)
+            $user->image = asset('storage/' . $user->image);
+
+        return $this->respondWithTokenAndUser($token, $user);
     }
 
     /**
@@ -32,12 +40,13 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithTokenAndUser($token, $user)
     {
         return response()->json([
+            'user' => $user,
             'token' => $token,
             'type' => 'Bearer',
-            'expires' => auth('api')->factory()->getTTL() * 60
+            'expires_in' => auth('api')->factory()->getTTL() * 60
         ]);
     }
 
