@@ -4,9 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\User;
 
 class AuthController extends Controller
 {
+    private $user;
+
+    public function __construct(User $user) {
+        $this->user = $user;
+    }
     /**
      * Get a JWT via given credentials.
      *
@@ -60,5 +66,27 @@ class AuthController extends Controller
         auth('api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    /**
+     * Register the user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => ['required'],
+            'email' => ['required', 'email', 'unique:App\\User,email'],
+            'password' => ['required', 'confirmed', 'string', 'min:8'],
+        ]);
+
+        $data = $request->all();
+
+        $data['password'] = bcrypt($data['password']);
+
+        $user = $this->user->create($data);
+
+        return response()->json($user);
     }
 }

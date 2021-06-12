@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 // Auth Routes
 Route::namespace('Auth')->group(function () {
     Route::post('login', 'AuthController@login');
+    Route::post('register', 'AuthController@register');
 
     Route::middleware('auth.jwt')->group(function () {
         Route::post('logout', 'AuthController@logout');
